@@ -1,0 +1,179 @@
+<!-- views/home.erb -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Social Graph · zendrx</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fafafa;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 600px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      padding: 3rem 2.5rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1px solid #eaeaea;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    
+    .logo span {
+      color: #1DA1F2;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 2rem;
+    }
+    
+    h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      line-height: 1.2;
+      margin-bottom: 0.75rem;
+    }
+    
+    h1 .highlight {
+      background: linear-gradient(135deg, #1DA1F2, #0d8bd9);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    
+    .description {
+      color: #555;
+      font-size: 1rem;
+      line-height: 1.6;
+      margin-bottom: 2rem;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+      margin-bottom: 2rem;
+    }
+    
+    .feature {
+      background: #f5f7fa;
+      padding: 0.6rem 0.9rem;
+      border-radius: 8px;
+      font-size: 0.85rem;
+      color: #333;
+      border: 1px solid #eaeaea;
+    }
+    
+    .feature strong {
+      font-weight: 600;
+    }
+    
+    .btn-x {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-x:hover {
+      background: #1a1a1a;
+    }
+    
+    .btn-x svg {
+      vertical-align: middle;
+      margin-right: 0.5rem;
+    }
+    
+    .footer-links {
+      margin-top: 1.5rem;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+    }
+    
+    .footer-links a {
+      color: #666;
+      text-decoration: none;
+      margin: 0 0.75rem;
+    }
+    
+    .footer-links a:hover {
+      color: #000;
+      text-decoration: underline;
+    }
+    
+    @media (max-width: 480px) {
+      .container { padding: 2rem 1.5rem; }
+      .features { grid-template-columns: 1fr; }
+      h1 { font-size: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">social<span>graph</span></div>
+    <div class="subtitle">live social presence tracker</div>
+    
+    <h1>
+      Your social<br>
+      <span class="highlight">presence, visualized.</span>
+    </h1>
+    
+    <p class="description">
+      Generate a clean, minimal graph of your followers across platforms.
+      One image. Live updates. Embed anywhere.
+    </p>
+    
+    <div class="features">
+      <div class="feature"><strong>X</strong> · followers &amp; tweets</div>
+      <div class="feature"><strong>dev.to</strong> · followers &amp; posts</div>
+      <div class="feature"><strong>YouTube</strong> · subscribers &amp; views</div>
+      <div class="feature"><strong>GitHub</strong> · followers &amp; repos</div>
+    </div>
+    
+    <a href="/auth/x" class="btn-x">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      Login with X
+    </a>
+    
+    <div class="footer-links">
+      <a href="https://github.com/zendrx/social-graph">GitHub</a>
+      <span>·</span>
+      <a href="#">Docs</a>
+      <span>·</span>
+      <span>v0.1.0</span>
+    </div>
+  </div>
+</body>
+</html>
