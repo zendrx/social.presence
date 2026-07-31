@@ -1,0 +1,486 @@
+<!-- views/dashboard.erb -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard · Social Graph</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f5f7fa;
+      color: #111;
+      padding: 2rem;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+    
+    /* ─── Header ─── */
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 1.5rem;
+      border-bottom: 1px solid #eaeaea;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .avatar {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: #1DA1F2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-weight: 700;
+      font-size: 1.1rem;
+      overflow: hidden;
+    }
+    
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .user-info h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+    
+    .user-info .handle {
+      color: #666;
+      font-size: 0.85rem;
+    }
+    
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .stats-badge {
+      background: #f0f2f5;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: #555;
+    }
+    
+    .stats-badge strong {
+      color: #000;
+    }
+    
+    .btn-logout {
+      background: none;
+      border: 1px solid #ddd;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      color: #666;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .btn-logout:hover {
+      border-color: #999;
+      color: #000;
+    }
+    
+    /* ─── Grid ─── */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+    
+    @media (max-width: 768px) {
+      .grid { grid-template-columns: 1fr; }
+      body { padding: 1rem; }
+      .header { flex-direction: column; align-items: flex-start; }
+    }
+    
+    /* ─── Cards ─── */
+    .card {
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #eaeaea;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+    }
+    
+    .card h3 {
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    
+    .card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    
+    .card .sub {
+      color: #888;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+    }
+    
+    .card .change {
+      font-size: 0.8rem;
+      color: #22c55e;
+      margin-top: 0.5rem;
+    }
+    
+    .card .change.negative {
+      color: #ef4444;
+    }
+    
+    /* ─── Platform rows ─── */
+    .platform-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid #f0f2f5;
+    }
+    
+    .platform-row:last-child {
+      border-bottom: none;
+    }
+    
+    .platform-row .name {
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .platform-row .name .dot {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+    
+    .platform-row .count {
+      font-weight: 600;
+    }
+    
+    .platform-row .count .sub {
+      font-weight: 400;
+      color: #999;
+      font-size: 0.8rem;
+    }
+    
+    /* ─── Graph Preview ─── */
+    .graph-preview {
+      grid-column: 1 / -1;
+      background: #fff;
+      border-radius: 12px;
+      padding: 1.5rem;
+      border: 1px solid #eaeaea;
+    }
+    
+    .graph-preview img {
+      width: 100%;
+      max-width: 100%;
+      border-radius: 8px;
+      background: #fafafa;
+    }
+    
+    .graph-controls {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .graph-controls button {
+      padding: 0.4rem 1rem;
+      border: 1px solid #ddd;
+      background: #fff;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    
+    .graph-controls button:hover {
+      border-color: #999;
+      background: #f5f7fa;
+    }
+    
+    .graph-controls button.active {
+      border-color: #1DA1F2;
+      background: #f0f7fe;
+      color: #1DA1F2;
+    }
+    
+    .embed-code {
+      margin-top: 1rem;
+      background: #f5f7fa;
+      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-family: 'SF Mono', 'Menlo', monospace;
+      color: #444;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+    
+    .embed-code code {
+      flex: 1;
+      overflow: auto;
+      white-space: nowrap;
+    }
+    
+    .embed-code button {
+      background: none;
+      border: none;
+      color: #1DA1F2;
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 500;
+      padding: 0.2rem 0.5rem;
+      font-family: inherit;
+    }
+    
+    .embed-code button:hover {
+      text-decoration: underline;
+    }
+    
+    /* ─── Footer ─── */
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #eaeaea;
+      text-align: center;
+      font-size: 0.8rem;
+      color: #999;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <header class="header">
+      <div class="header-left">
+        <div class="avatar">
+          <% if @user && @user[:avatar_url] %>
+            <img src="<%= @user[:avatar_url] %>" alt="<%= @user[:name] %>">
+          <% else %>
+            <%= @user ? @user[:name][0..1].upcase : '?' %>
+          <% end %>
+        </div>
+        <div class="user-info">
+          <h2><%= @user ? @user[:name] : 'User' %></h2>
+          <span class="handle">@<%= @user ? @user[:x_username] : 'username' %></span>
+        </div>
+      </div>
+      <div class="header-right">
+        <span class="stats-badge">
+          <strong id="follower-count"><%= @user ? @user[:followers] : 0 %></strong> followers
+        </span>
+        <span class="stats-badge">
+          <strong id="tweet-count"><%= @user ? @user[:tweets] : 0 %></strong> tweets
+        </span>
+        <button class="btn-logout" onclick="logout()">Logout</button>
+      </div>
+    </header>
+
+    <!-- Dashboard Grid -->
+    <div class="grid">
+      <!-- X Stats -->
+      <div class="card">
+        <h3>X</h3>
+        <div class="value"><%= @user ? @user[:followers] : 0 %></div>
+        <div class="sub">followers</div>
+        <div style="margin-top: 0.75rem; font-size: 0.9rem; color: #555;">
+          <%= @user ? @user[:following] : 0 %> following
+        </div>
+        <div style="font-size: 0.9rem; color: #555;">
+          <%= @user ? @user[:tweets] : 0 %> tweets
+        </div>
+        <% if @user && @user[:verified] %>
+          <div style="margin-top: 0.5rem; font-size: 0.8rem; color: #1DA1F2;">✓ Verified</div>
+        <% end %>
+        <button onclick="refreshXStats()" style="margin-top: 1rem; background: none; border: 1px solid #ddd; padding: 0.3rem 0.8rem; border-radius: 6px; font-size: 0.75rem; cursor: pointer; font-family: inherit;">
+          ↻ Refresh
+        </button>
+      </div>
+
+      <!-- Platform Setup -->
+      <div class="card">
+        <h3>Connect Platforms</h3>
+        <div style="margin-bottom: 0.5rem; font-size: 0.85rem; color: #666;">
+          Add your handles to track more platforms
+        </div>
+        <form id="config-form" style="margin-top: 0.5rem;">
+          <div style="margin-bottom: 0.75rem;">
+            <label style="font-size: 0.75rem; font-weight: 600; color: #666; display: block; margin-bottom: 0.2rem;">dev.to handle</label>
+            <input id="devto-input" type="text" placeholder="zendrx" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; font-family: inherit;">
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label style="font-size: 0.75rem; font-weight: 600; color: #666; display: block; margin-bottom: 0.2rem;">YouTube channel ID</label>
+            <input id="youtube-input" type="text" placeholder="UCxxxxx" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; font-family: inherit;">
+          </div>
+          <div style="margin-bottom: 0.75rem;">
+            <label style="font-size: 0.75rem; font-weight: 600; color: #666; display: block; margin-bottom: 0.2rem;">GitHub username</label>
+            <input id="github-input" type="text" placeholder="zendrx" style="width: 100%; padding: 0.5rem; border: 1px solid #ddd; border-radius: 6px; font-size: 0.9rem; font-family: inherit;">
+          </div>
+          <button type="submit" style="width: 100%; padding: 0.6rem; background: #000; color: #fff; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; font-family: inherit;">
+            Save &amp; Generate Graph
+          </button>
+        </form>
+      </div>
+
+      <!-- Graph Preview -->
+      <div class="graph-preview">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1rem;">
+          <h3 style="font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.04em; color: #888; margin: 0;">Live Graph</h3>
+          <span style="font-size: 0.75rem; color: #999;" id="updated-at">Updated: loading...</span>
+        </div>
+        
+        <img id="graph-image" src="/graph?type=bar&t=<%= Time.now.to_i %>" alt="Social graph" style="width: 100%; border-radius: 8px; background: #fff;">
+        
+        <div class="graph-controls">
+          <button class="active" data-type="bar">Bar</button>
+          <button data-type="line">Line</button>
+          <button data-type="histogram">Histogram</button>
+          <button onclick="refreshGraph()" style="margin-left: auto;">↻ Refresh</button>
+        </div>
+        
+        <div class="embed-code">
+          <code id="embed-code">https://yourdomain.com/u/<%= @user ? @user[:x_username] : 'username' %>/graph</code>
+          <button onclick="copyEmbed()">Copy URL</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      socialgraph v0.1 · built with Ruby &amp; Sinatra · <a href="https://github.com/zendrx/social-graph" style="color: #666; text-decoration: none;">GitHub</a>
+    </div>
+  </div>
+
+  <script>
+    // ─── Graph Controls ───
+    document.querySelectorAll('.graph-controls button[data-type]').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.graph-controls button[data-type]').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        const type = this.dataset.type;
+        const img = document.getElementById('graph-image');
+        img.src = `/graph?type=${type}&t=${Date.now()}`;
+      });
+    });
+    
+    // ─── Refresh Graph ───
+    function refreshGraph() {
+      const img = document.getElementById('graph-image');
+      img.src = img.src.split('?')[0] + '?t=' + Date.now();
+    }
+    
+    // ─── Refresh X Stats ───
+    async function refreshXStats() {
+      const btn = event.target;
+      btn.textContent = '...';
+      btn.disabled = true;
+      
+      try {
+        const res = await fetch('/api/x/stats');
+        const data = await res.json();
+        if (data.status === 'ok') {
+          document.getElementById('follower-count').textContent = data.data.followers;
+          document.getElementById('tweet-count').textContent = data.data.tweets;
+          refreshGraph();
+          document.getElementById('updated-at').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+        }
+      } catch(e) {
+        alert('Failed to refresh X stats');
+      }
+      
+      btn.textContent = '↻ Refresh';
+      btn.disabled = false;
+    }
+    
+    // ─── Copy Embed URL ───
+    function copyEmbed() {
+      const code = document.getElementById('embed-code');
+      navigator.clipboard.writeText(code.textContent).then(() => {
+        const btn = event.target;
+        const original = btn.textContent;
+        btn.textContent = '✓ Copied!';
+        setTimeout(() => btn.textContent = original, 2000);
+      });
+    }
+    
+    // ─── Save Config ───
+    document.getElementById('config-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const devto = document.getElementById('devto-input').value;
+      const youtube = document.getElementById('youtube-input').value;
+      const github = document.getElementById('github-input').value;
+      
+      const btn = e.target.querySelector('button[type="submit"]');
+      const original = btn.textContent;
+      btn.textContent = 'Saving...';
+      btn.disabled = true;
+      
+      try {
+        const res = await fetch('/api/configure', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ devto, youtube, github })
+        });
+        const data = await res.json();
+        if (data.status === 'ok') {
+          refreshGraph();
+          document.getElementById('updated-at').textContent = 'Updated: just now';
+          btn.textContent = '✓ Saved!';
+          setTimeout(() => btn.textContent = 'Save & Generate Graph', 2000);
+        }
+      } catch(e) {
+        alert('Failed to save config');
+      }
+      
+      btn.disabled = false;
+    });
+    
+    // ─── Logout ───
+    async function logout() {
+      await fetch('/logout', { method: 'POST' });
+      window.location.href = '/';
+    }
+    
+    // ─── Set updated time ───
+    document.getElementById('updated-at').textContent = 'Updated: ' + new Date().toLocaleTimeString();
+  </script>
+</body>
+</html>
