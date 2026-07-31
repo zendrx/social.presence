@@ -1,0 +1,215 @@
+<!-- views/signin.erb -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in · Social Graph</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fafafa;
+      color: #111;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+    }
+    
+    .container {
+      max-width: 420px;
+      width: 100%;
+      background: #fff;
+      border-radius: 16px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.06);
+      border: 1px solid #eaeaea;
+    }
+    
+    .back {
+      display: inline-block;
+      color: #999;
+      text-decoration: none;
+      font-size: 0.85rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .back:hover { color: #000; }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.25rem;
+    }
+    
+    .subtitle {
+      color: #666;
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .btn-x {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      background: #000;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-x:hover { background: #1a1a1a; }
+    
+    .divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: #ccc;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    
+    .divider::before,
+    .divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: #eaeaea;
+    }
+    
+    .divider::before { margin-right: 1rem; }
+    .divider::after { margin-left: 1rem; }
+    
+    .form-group {
+      margin-bottom: 1rem;
+    }
+    
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0.3rem;
+    }
+    
+    .form-group input {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      font-family: inherit;
+      transition: border 0.2s;
+      background: #fafafa;
+    }
+    
+    .form-group input:focus {
+      outline: none;
+      border-color: #1DA1F2;
+      background: #fff;
+    }
+    
+    .btn-email {
+      display: block;
+      width: 100%;
+      padding: 0.85rem;
+      background: #f0f2f5;
+      color: #111;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+      font-family: inherit;
+    }
+    
+    .btn-email:hover { background: #e4e6ea; }
+    
+    .demo-note {
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: #999;
+      text-align: center;
+      line-height: 1.5;
+    }
+    
+    .demo-note code {
+      background: #f0f2f5;
+      padding: 0.1rem 0.4rem;
+      border-radius: 4px;
+      font-size: 0.7rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="/" class="back">← back</a>
+    
+    <h1>Sign in</h1>
+    <p class="subtitle">Connect your accounts to generate your graph</p>
+    
+    <a href="/auth/x" class="btn-x">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" style="vertical-align: middle; margin-right: 8px;">
+        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+      </svg>
+      Continue with X
+    </a>
+    
+    <div class="divider">or</div>
+    
+    <form action="/login" method="POST" id="email-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn-email">Sign in with email</button>
+    </form>
+    
+    <div class="demo-note">
+      No account? <a href="/signup" style="color: #1DA1F2; text-decoration: none;">Create one</a>
+      <br>
+      <span>demo: <code>demo@socialgraph.com</code> / <code>demopass</code></span>
+    </div>
+  </div>
+  
+  <script>
+    document.getElementById('email-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const email = document.getElementById('email').value;
+      const password = document.getElementById('password').value;
+      
+      const res = await fetch('/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+      });
+      
+      const data = await res.json();
+      
+      if (data.status === 'ok') {
+        window.location.href = '/dashboard';
+      } else {
+        alert(data.error || 'Login failed');
+      }
+    });
+  </script>
+</body>
+</html>
